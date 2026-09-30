@@ -1,0 +1,2395 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educator Dashboard | Nonscholastic</title>
+
+```
+<link rel="stylesheet" href="../../styles/global.css">
+
+<style>
+    .edu-page {
+        width: 100%;
+    }
+
+    .edu-section {
+        display: none;
+    }
+
+    .edu-section.active {
+        display: block;
+    }
+
+    .edu-nav {
+        cursor: pointer;
+        border: none;
+        width: 100%;
+        text-align: left;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+    }
+
+    .edu-nav.active {
+        background: rgba(110, 70, 255, 0.10);
+    }
+
+    .edu-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .stat-card {
+        padding: 22px;
+    }
+
+    .stat-card small {
+        display: block;
+        color: #777;
+        margin-bottom: 8px;
+    }
+
+    .stat-card strong {
+        font-size: 30px;
+    }
+
+    .class-card {
+        overflow: hidden;
+    }
+
+    .class-image {
+        width: 100%;
+        height: 190px;
+        object-fit: cover;
+    }
+
+    .class-body {
+        padding: 20px;
+    }
+
+    .class-meta {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 18px 0;
+    }
+
+    .meta-box {
+        padding: 12px;
+        background: #f7f7f9;
+        border-radius: 12px;
+    }
+
+    .meta-box small {
+        display: block;
+        color: #777;
+        margin-bottom: 4px;
+    }
+
+    .meta-box strong {
+        font-size: 14px;
+    }
+
+    .progress-track {
+        height: 8px;
+        background: #ececf1;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-value {
+        height: 100%;
+        background: #6f4cff;
+        border-radius: 20px;
+    }
+
+    .student-row {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr 1fr 1fr auto;
+        gap: 16px;
+        align-items: center;
+        padding: 17px 0;
+        border-bottom: 1px solid #eeeeef;
+    }
+
+    .student-row:last-child {
+        border-bottom: none;
+    }
+
+    .status {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        background: #edf8ef;
+        color: #26733c;
+    }
+
+    .status.review {
+        background: #fff3df;
+        color: #a86200;
+    }
+
+    .lecture-card {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        padding: 18px;
+    }
+
+    .lecture-thumb {
+        width: 150px;
+        height: 90px;
+        border-radius: 12px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .session-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        margin-bottom: 14px;
+    }
+
+    .session-left {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+    }
+
+    .date-card {
+        width: 70px;
+        min-width: 70px;
+        text-align: center;
+        padding: 10px;
+        border-radius: 14px;
+        background: #f5f2ff;
+    }
+
+    .date-card span {
+        display: block;
+        font-size: 11px;
+        color: #6f4cff;
+        font-weight: 700;
+    }
+
+    .date-card strong {
+        display: block;
+        font-size: 26px;
+        margin: 3px 0;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .field {
+        margin-bottom: 16px;
+    }
+
+    .field.full {
+        grid-column: 1 / -1;
+    }
+
+    .field label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #dddde5;
+        border-radius: 11px;
+        font: inherit;
+        background: white;
+        box-sizing: border-box;
+    }
+
+    .field textarea {
+        resize: vertical;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 45px 20px;
+        color: #777;
+    }
+
+    .video-box {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #10131b;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .video-box iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .meeting-screen {
+        background: #11151e;
+        color: white;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .meeting-header {
+        padding: 18px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .meeting-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .participant {
+        min-height: 190px;
+        border-radius: 14px;
+        background: #242b38;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .participant span {
+        font-size: 13px;
+        font-weight: 400;
+        margin-top: 7px;
+        opacity: .7;
+    }
+
+    .meeting-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 18px;
+        flex-wrap: wrap;
+    }
+
+    .meeting-control {
+        border: none;
+        border-radius: 50%;
+        width: 46px;
+        height: 46px;
+        cursor: pointer;
+        background: #2c3442;
+        color: white;
+        font-size: 17px;
+    }
+
+    .meeting-control.leave {
+        width: auto;
+        border-radius: 24px;
+        padding: 0 22px;
+        background: #e5484d;
+    }
+
+    .modal-content-wide {
+        max-width: 950px;
+    }
+
+    @media (max-width: 850px) {
+        .student-row {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .session-card {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .class-meta,
+        .form-row,
+        .meeting-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .lecture-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .lecture-thumb {
+            width: 100%;
+            height: 170px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body data-role="educator">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+```
+<div class="logo">
+    Non<span>scholastic</span>
+</div>
+
+<div class="nav-title">TEACH</div>
+
+<button class="nav-item edu-nav active" data-section="dashboard">
+    <span class="nav-icon">⌂</span>
+    Dashboard
+</button>
+
+<button class="nav-item edu-nav" data-section="classes">
+    <span class="nav-icon">▣</span>
+    My Classes
+</button>
+
+<button class="nav-item edu-nav" data-section="lectures">
+    <span class="nav-icon">▶</span>
+    Recorded Lectures
+</button>
+
+<button class="nav-item edu-nav" data-section="sessions">
+    <span class="nav-icon">◷</span>
+    Upcoming Sessions
+</button>
+
+<button class="nav-item edu-nav" data-section="students">
+    <span class="nav-icon">◎</span>
+    Students
+</button>
+
+<button class="nav-item edu-nav" data-section="add">
+    <span class="nav-icon">＋</span>
+    Add New Class
+</button>
+
+<button class="nav-item edu-nav" data-section="profile">
+    <span class="nav-icon">◉</span>
+    Profile
+</button>
+
+<div class="nav-title" style="margin-top:30px;">
+    ACCOUNT
+</div>
+
+<a class="nav-item" href="../user/user-dashboard.html">
+    <span class="nav-icon">↗</span>
+    View learner side
+</a>
+
+<button class="nav-item logout-nav" type="button" data-logout><span class="nav-icon">↪</span>Log out</button>
+
+<div class="sidebar-note">
+    <small>TEACH • CREATE • INSPIRE</small>
+    <strong>Build classes learners want to come back to.</strong>
+</div>
+```
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main">
+
+```
+<header class="topbar">
+
+    <button class="mobile-menu" id="mobileMenu">
+        ☰
+    </button>
+
+    <div class="search">
+        <span>⌕</span>
+        <input
+            type="text"
+            id="educatorSearch"
+            placeholder="Search classes, students or lectures..."
+        >
+    </div>
+
+    <div class="profile">
+
+        <div class="profile-info">
+            <strong>Dr. Jane Doe</strong>
+            <span>Educator · Nonscholastic</span>
+        </div>
+
+        <img
+            src="https://i.pravatar.cc/100?img=32"
+            alt="Educator profile"
+        >
+
+    </div>
+
+</header>
+
+
+<div class="content edu-page">
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section
+        class="edu-section active"
+        id="dashboard"
+    >
+
+        <div class="eyebrow">
+            Your teaching space
+        </div>
+
+        <h1>
+            Good morning, Jane.
+        </h1>
+
+        <p class="intro">
+            Manage your classes, learners and live sessions from one place.
+        </p>
+
+
+        <div class="metric-grid">
+
+            <div class="metric stat-card">
+                <small>Total Classes</small>
+                <strong id="classCount">2</strong>
+            </div>
+
+            <div class="metric stat-card">
+                <small>Enrolled Students</small>
+                <strong>77</strong>
+            </div>
+
+            <div class="metric stat-card">
+                <small>Recorded Lectures</small>
+                <strong>12</strong>
+            </div>
+
+            <div class="metric stat-card">
+                <small>Upcoming Sessions</small>
+                <strong>3</strong>
+            </div>
+
+        </div>
+
+
+        <div class="split" style="margin-top:22px;">
+
+            <div class="panel">
+
+                <h2>
+                    Teaching Overview
+                </h2>
+
+                <p class="muted">
+                    Student engagement · 82%
+                </p>
+
+                <div class="progress-track">
+                    <div
+                        class="progress-value"
+                        style="width:82%"
+                    ></div>
+                </div>
+
+                <p class="muted" style="margin-top:18px;">
+                    Average class completion · 68%
+                </p>
+
+                <div class="progress-track">
+                    <div
+                        class="progress-value"
+                        style="width:68%"
+                    ></div>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="eyebrow">
+                    NEXT SESSION
+                </div>
+
+                <h2>
+                    React State Management Live Q&A
+                </h2>
+
+                <p class="muted">
+                    Saturday · 4:00 PM
+                </p>
+
+                <p class="muted">
+                    Fullstack Web Development · 12 learners
+                </p>
+
+                <button
+                    class="btn"
+                    id="dashboardMeeting"
+                    style="margin-top:15px;"
+                >
+                    Start meeting →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= CLASSES ================= -->
+
+    <section
+        class="edu-section"
+        id="classes"
+    >
+
+        <div class="eyebrow">
+            YOUR CATALOGUE
+        </div>
+
+        <h1>
+            My Classes
+        </h1>
+
+        <p class="intro">
+            Manage your courses, curriculum and learners.
+        </p>
+
+
+        <div
+            class="grid"
+            id="classesGrid"
+        >
+
+            <!-- CLASS 1 -->
+
+            <article
+                class="card class-card searchable"
+                data-search="fullstack web development technology react javascript"
+            >
+
+                <img
+                    class="class-image"
+                    src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=85"
+                    alt="Web development"
+                >
+
+                <div class="class-body">
+
+                    <span class="tag">
+                        Development
+                    </span>
+
+                    <h3>
+                        Fullstack Web Development
+                    </h3>
+
+                    <p>
+                        HTML, CSS, JavaScript, Node.js and React.
+                    </p>
+
+
+                    <div class="class-meta">
+
+                        <div class="meta-box">
+                            <small>Students</small>
+                            <strong>42 / 50</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <small>Progress</small>
+                            <strong>71%</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <small>Lessons</small>
+                            <strong>12</strong>
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn small manage-class"
+                        data-name="Fullstack Web Development"
+                        data-category="Development"
+                        data-duration="12 Weeks"
+                        data-fee="$199"
+                        data-students="42 / 50"
+                    >
+                        Manage class →
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <!-- CLASS 2 -->
+
+            <article
+                class="card class-card searchable"
+                data-search="ui ux fundamentals design figma prototype"
+            >
+
+                <img
+                    class="class-image"
+                    src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=1000&q=85"
+                    alt="UI UX design"
+                >
+
+                <div class="class-body">
+
+                    <span class="tag pink">
+                        Design
+                    </span>
+
+                    <h3>
+                        UI/UX Fundamentals
+                    </h3>
+
+                    <p>
+                        Figma, design systems and prototyping.
+                    </p>
+
+
+                    <div class="class-meta">
+
+                        <div class="meta-box">
+                            <small>Students</small>
+                            <strong>35 / 40</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <small>Progress</small>
+                            <strong>64%</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <small>Lessons</small>
+                            <strong>8</strong>
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn small manage-class"
+                        data-name="UI/UX Fundamentals"
+                        data-category="Design"
+                        data-duration="6 Weeks"
+                        data-fee="$149"
+                        data-students="35 / 40"
+                    >
+                        Manage class →
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= LECTURES ================= -->
+
+    <section
+        class="edu-section"
+        id="lectures"
+    >
+
+        <div class="eyebrow">
+            CONTENT LIBRARY
+        </div>
+
+        <h1>
+            Recorded Lectures
+        </h1>
+
+        <p class="intro">
+            Review and manage the lectures available to learners.
+        </p>
+
+
+        <div class="grid">
+
+            <article
+                class="card searchable"
+                data-search="web architecture fullstack javascript"
+            >
+
+                <div class="video-wrap" style="margin:0;">
+
+                    <iframe
+                        src="https://www.youtube.com/embed/ysz5S6PUM-U"
+                        title="Web architecture lecture"
+                        allowfullscreen>
+                    </iframe>
+
+                </div>
+
+                <div class="class-body">
+
+                    <span class="tag">
+                        Development
+                    </span>
+
+                    <h3>
+                        Introduction to Web Architecture
+                    </h3>
+
+                    <p>
+                        Fullstack Web Development · 45 minutes
+                    </p>
+
+                    <button
+                        class="btn small lecture-open"
+                    >
+                        Open lecture
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <article
+                class="card searchable"
+                data-search="figma design ui ux"
+            >
+
+                <div class="video-wrap" style="margin:0;">
+
+                    <iframe
+                        src="https://www.youtube.com/embed/4Tr0otuiQuU"
+                        title="Figma design lecture"
+                        allowfullscreen>
+                    </iframe>
+
+                </div>
+
+                <div class="class-body">
+
+                    <span class="tag pink">
+                        Design
+                    </span>
+
+                    <h3>
+                        Figma Design System Basics
+                    </h3>
+
+                    <p>
+                        UI/UX Fundamentals · 60 minutes
+                    </p>
+
+                    <button
+                        class="btn small lecture-open"
+                    >
+                        Open lecture
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= SESSIONS ================= -->
+
+    <section
+        class="edu-section"
+        id="sessions"
+    >
+
+        <div class="eyebrow">
+            GO LIVE
+        </div>
+
+        <h1>
+            Upcoming Sessions
+        </h1>
+
+        <p class="intro">
+            Manage your upcoming live classes.
+        </p>
+
+
+        <div
+            class="panel session-card searchable"
+            data-search="react state management live q&a fullstack saturday"
+        >
+
+            <div class="session-left">
+
+                <div class="date-card">
+                    <span>SAT</span>
+                    <strong>19</strong>
+                    <span>SEP</span>
+                </div>
+
+                <div>
+
+                    <h3>
+                        React State Management Live Q&A
+                    </h3>
+
+                    <p class="muted">
+                        4:00 PM · Fullstack Web Development
+                    </p>
+
+                    <p class="muted">
+                        12 learners registered
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn start-meeting"
+                data-title="React State Management Live Q&A"
+            >
+                Start meeting →
+            </button>
+
+        </div>
+
+
+        <div
+            class="panel session-card searchable"
+            data-search="user research portfolio review ui ux monday"
+        >
+
+            <div class="session-left">
+
+                <div class="date-card">
+                    <span>MON</span>
+                    <strong>21</strong>
+                    <span>SEP</span>
+                </div>
+
+                <div>
+
+                    <h3>
+                        User Research Portfolio Review
+                    </h3>
+
+                    <p class="muted">
+                        2:00 PM · UI/UX Fundamentals
+                    </p>
+
+                    <p class="muted">
+                        18 learners registered
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn secondary schedule-details"
+            >
+                View details
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= STUDENTS ================= -->
+
+    <section
+        class="edu-section"
+        id="students"
+    >
+
+        <div class="eyebrow">
+            LEARNER OVERVIEW
+        </div>
+
+        <h1>
+            Students
+        </h1>
+
+        <p class="intro">
+            Track learner engagement and course progress.
+        </p>
+
+
+        <div class="panel">
+
+            <div class="student-row"
+                 style="font-weight:700;">
+                <span>Student</span>
+                <span>Class</span>
+                <span>Progress</span>
+                <span>Status</span>
+                <span>Action</span>
+            </div>
+
+
+            <div
+                class="student-row searchable"
+                data-search="alex johnson fullstack development"
+            >
+
+                <strong>
+                    Alex Johnson
+                </strong>
+
+                <span>
+                    Fullstack Web Development
+                </span>
+
+                <span>
+                    75%
+                </span>
+
+                <span class="status">
+                    Active
+                </span>
+
+                <button
+                    class="btn small ghost student-view"
+                    data-student="Alex Johnson"
+                >
+                    View
+                </button>
+
+            </div>
+
+
+            <div
+                class="student-row searchable"
+                data-search="sarah smith ui ux design"
+            >
+
+                <strong>
+                    Sarah Smith
+                </strong>
+
+                <span>
+                    UI/UX Fundamentals
+                </span>
+
+                <span>
+                    40%
+                </span>
+
+                <span class="status">
+                    Active
+                </span>
+
+                <button
+                    class="btn small ghost student-view"
+                    data-student="Sarah Smith"
+                >
+                    View
+                </button>
+
+            </div>
+
+
+            <div
+                class="student-row searchable"
+                data-search="maya patel fullstack development"
+            >
+
+                <strong>
+                    Maya Patel
+                </strong>
+
+                <span>
+                    Fullstack Web Development
+                </span>
+
+                <span>
+                    92%
+                </span>
+
+                <span class="status review">
+                    Needs review
+                </span>
+
+                <button
+                    class="btn small ghost student-view"
+                    data-student="Maya Patel"
+                >
+                    View
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= ADD CLASS ================= -->
+
+    <section
+        class="edu-section"
+        id="add"
+    >
+
+        <div class="eyebrow">
+            PUBLISH SOMETHING NEW
+        </div>
+
+        <h1>
+            Add New Class
+        </h1>
+
+        <p class="intro">
+            Create a course learners can discover.
+        </p>
+
+
+        <div class="panel">
+
+            <form id="addClassForm">
+
+                <div class="form-row">
+
+                    <div class="field">
+
+                        <label>
+                            Class name
+                        </label>
+
+                        <input
+                            id="newClassName"
+                            required
+                            placeholder="e.g. Contemporary Dance"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Category
+                        </label>
+
+                        <select id="newClassCategory">
+
+                            <option>Technology</option>
+                            <option>Creative</option>
+                            <option>Dance</option>
+                            <option>Music</option>
+                            <option>Art</option>
+                            <option>Business</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field full">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            id="newClassDescription"
+                            rows="4"
+                            required
+                            placeholder="Tell learners what they will learn..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Difficulty
+                        </label>
+
+                        <select id="newClassDifficulty">
+
+                            <option>Beginner</option>
+                            <option>Intermediate</option>
+                            <option>Advanced</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Duration
+                        </label>
+
+                        <input
+                            id="newClassDuration"
+                            required
+                            placeholder="8 Weeks"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Fee
+                        </label>
+
+                        <input
+                            id="newClassFee"
+                            required
+                            placeholder="₹4,500"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Maximum students
+                        </label>
+
+                        <input
+                            id="newClassCapacity"
+                            type="number"
+                            min="1"
+                            value="30"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Location
+                        </label>
+
+                        <input
+                            id="newClassLocation"
+                            placeholder="Studio / Online"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Schedule
+                        </label>
+
+                        <input
+                            id="newClassSchedule"
+                            placeholder="Saturday · 5 PM"
+                        >
+
+                    </div>
+
+
+                    <div class="field full">
+
+                        <label>
+                            Intro video URL
+                        </label>
+
+                        <input
+                            id="newClassVideo"
+                            placeholder="YouTube URL"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <p class="muted">
+                    Frontend prototype: published classes appear immediately in your educator catalogue.
+                </p>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    Publish class →
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= PROFILE ================= -->
+
+    <section
+        class="edu-section"
+        id="profile"
+    >
+
+        <div class="eyebrow">
+            EDUCATOR IDENTITY
+        </div>
+
+        <h1>
+            Profile
+        </h1>
+
+        <p class="intro">
+            Tell learners who you are and what you teach.
+        </p>
+
+
+        <div class="panel">
+
+            <div class="form-row">
+
+                <div class="field">
+
+                    <label>
+                        Full name
+                    </label>
+
+                    <input
+                        id="profileName"
+                        value="Dr. Jane Doe"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        id="profileEmail"
+                        value="jane.doe@example.com"
+                    >
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Bio
+                    </label>
+
+                    <textarea
+                        id="profileBio"
+                        rows="4"
+                    >Passionate educator with over 10 years of experience teaching web technologies and software engineering.</textarea>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Specialisation
+                    </label>
+
+                    <input
+                        id="profileSpecialisation"
+                        value="Web Development · UI/UX"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Teaching format
+                    </label>
+
+                    <select id="profileFormat">
+
+                        <option>
+                            Online + In-person
+                        </option>
+
+                        <option>
+                            Online
+                        </option>
+
+                        <option>
+                            In-person
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn"
+                id="saveProfile"
+            >
+                Update profile
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+```
+
+</main>
+
+<!-- ================= CLASS MODAL ================= -->
+
+<div
+    class="modal-backdrop"
+    id="classModal"
+>
+
+```
+<div class="modal">
+
+    <button
+        class="modal-close"
+        id="closeClassModal"
+    >
+        ×
+    </button>
+
+    <div id="classModalContent"></div>
+
+</div>
+```
+
+</div>
+
+<!-- ================= STUDENT MODAL ================= -->
+
+<div
+    class="modal-backdrop"
+    id="studentModal"
+>
+
+```
+<div class="modal">
+
+    <button
+        class="modal-close"
+        id="closeStudentModal"
+    >
+        ×
+    </button>
+
+    <div id="studentModalContent"></div>
+
+</div>
+```
+
+</div>
+
+<!-- ================= MEETING MODAL ================= -->
+
+<div
+    class="modal-backdrop"
+    id="meetingModal"
+>
+
+```
+<div class="modal modal-content-wide">
+
+    <button
+        class="modal-close"
+        id="closeMeetingModal"
+    >
+        ×
+    </button>
+
+
+    <div class="meeting-screen">
+
+        <div class="meeting-header">
+
+            <strong id="meetingTitle">
+                Live Class
+            </strong>
+
+            <span>
+                ● Educator mode
+            </span>
+
+        </div>
+
+
+        <div class="meeting-grid">
+
+            <div class="participant">
+                JD
+                <span>You · Host</span>
+            </div>
+
+            <div class="participant">
+                AJ
+                <span>Alex Johnson</span>
+            </div>
+
+            <div class="participant">
+                SS
+                <span>Sarah Smith</span>
+            </div>
+
+            <div class="participant">
+                MP
+                <span>Maya Patel</span>
+            </div>
+
+        </div>
+
+
+        <div class="meeting-controls">
+
+            <button
+                class="meeting-control"
+                id="micButton"
+                title="Microphone"
+            >
+                🎤
+            </button>
+
+            <button
+                class="meeting-control"
+                id="cameraButton"
+                title="Camera"
+            >
+                🎥
+            </button>
+
+            <button
+                class="meeting-control"
+                title="Screen sharing"
+                id="screenButton"
+            >
+                🖥
+            </button>
+
+            <button
+                class="meeting-control"
+                title="Chat"
+                id="chatButton"
+            >
+                💬
+            </button>
+
+            <button
+                class="meeting-control leave"
+                id="endMeeting"
+            >
+                End class
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<div
+    class="toast"
+    id="educatorToast"
+></div>
+
+<script>
+
+(function () {
+
+    "use strict";
+
+
+    /* =========================================
+       HELPERS
+    ========================================= */
+
+    const $ = (selector) =>
+        document.querySelector(selector);
+
+    const $$ = (selector) =>
+        document.querySelectorAll(selector);
+
+
+    const toast = (message) => {
+
+        const element = $("#educatorToast");
+
+        if (!element) return;
+
+        element.textContent = message;
+        element.classList.add("show");
+
+        setTimeout(() => {
+            element.classList.remove("show");
+        }, 2200);
+
+    };
+
+
+    /* =========================================
+       NAVIGATION
+    ========================================= */
+
+    $$(".edu-nav").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const sectionName =
+                button.dataset.section;
+
+            $$(".edu-section").forEach(section => {
+                section.classList.remove("active");
+            });
+
+            const target =
+                document.getElementById(sectionName);
+
+            if (target) {
+                target.classList.add("active");
+            }
+
+            $$(".edu-nav").forEach(nav => {
+                nav.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        });
+
+    });
+
+
+    /* =========================================
+       MOBILE SIDEBAR
+    ========================================= */
+
+    const mobileMenu = $("#mobileMenu");
+
+    if (mobileMenu) {
+
+        mobileMenu.addEventListener("click", () => {
+
+            document
+                .querySelector(".sidebar")
+                ?.classList.toggle("show");
+
+        });
+
+    }
+
+
+    /* =========================================
+       SEARCH
+    ========================================= */
+
+    const search = $("#educatorSearch");
+
+    if (search) {
+
+        search.addEventListener("input", () => {
+
+            const query =
+                search.value.trim().toLowerCase();
+
+            const visibleSection =
+                document.querySelector(".edu-section.active");
+
+            if (!visibleSection) return;
+
+            const searchable =
+                visibleSection.querySelectorAll(".searchable");
+
+            searchable.forEach(item => {
+
+                const text =
+                    (item.dataset.search || item.textContent)
+                    .toLowerCase();
+
+                item.style.display =
+                    !query || text.includes(query)
+                        ? ""
+                        : "none";
+
+            });
+
+        });
+
+    }
+
+
+    /* =========================================
+       CLASS MODAL
+    ========================================= */
+
+    const classModal = $("#classModal");
+    const classContent = $("#classModalContent");
+
+
+    $$(".manage-class").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const name =
+                button.dataset.name;
+
+            const category =
+                button.dataset.category;
+
+            const duration =
+                button.dataset.duration;
+
+            const fee =
+                button.dataset.fee;
+
+            const students =
+                button.dataset.students;
+
+
+            classContent.innerHTML = `
+
+                <div class="eyebrow">
+                    ${category}
+                </div>
+
+                <h2>
+                    ${name}
+                </h2>
+
+                <p class="muted">
+                    Manage your class, curriculum and learners.
+                </p>
+
+
+                <div class="class-meta">
+
+                    <div class="meta-box">
+                        <small>Duration</small>
+                        <strong>${duration}</strong>
+                    </div>
+
+                    <div class="meta-box">
+                        <small>Fee</small>
+                        <strong>${fee}</strong>
+                    </div>
+
+                    <div class="meta-box">
+                        <small>Students</small>
+                        <strong>${students}</strong>
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Curriculum
+                </h3>
+
+
+                <div class="panel" style="margin-top:12px;">
+
+                    <p>✓ 01 · Foundations</p>
+                    <p>✓ 02 · Core Concepts</p>
+                    <p>✓ 03 · Practical Workshop</p>
+                    <p>○ 04 · Advanced Concepts</p>
+                    <p>○ 05 · Final Project</p>
+
+                </div>
+
+
+                <h3 style="margin-top:20px;">
+                    Class actions
+                </h3>
+
+
+                <div class="edu-actions">
+
+                    <button
+                        class="btn edit-class"
+                    >
+                        Edit class
+                    </button>
+
+                    <button
+                        class="btn secondary"
+                        id="modalStudents"
+                    >
+                        View students
+                    </button>
+
+                    <button
+                        class="btn secondary"
+                        id="modalLecture"
+                    >
+                        Add lecture
+                    </button>
+
+                </div>
+
+            `;
+
+
+            classModal.classList.add("show");
+
+
+            $("#modalStudents").addEventListener(
+                "click",
+                () => {
+
+                    closeModal(classModal);
+
+                    document
+                        .querySelector('[data-section="students"]')
+                        ?.click();
+
+                }
+            );
+
+
+            $("#modalLecture").addEventListener(
+                "click",
+                () => {
+
+                    toast("Lecture upload interface ready for backend connection.");
+
+                }
+            );
+
+
+            $(".edit-class").addEventListener(
+                "click",
+                () => {
+
+                    toast("Edit mode opened.");
+
+                }
+            );
+
+        });
+
+    });
+
+
+    const closeModal = (modal) => {
+
+        if (modal) {
+            modal.classList.remove("show");
+        }
+
+    };
+
+
+    $("#closeClassModal")?.addEventListener(
+        "click",
+        () => closeModal(classModal)
+    );
+
+
+    /* =========================================
+       STUDENT MODAL
+    ========================================= */
+
+    const studentModal =
+        $("#studentModal");
+
+    const studentContent =
+        $("#studentModalContent");
+
+
+    $$(".student-view").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const name =
+                button.dataset.student;
+
+
+            studentContent.innerHTML = `
+
+                <div class="eyebrow">
+                    LEARNER PROFILE
+                </div>
+
+                <h2>
+                    ${name}
+                </h2>
+
+                <p class="muted">
+                    Fullstack Web Development
+                </p>
+
+
+                <div class="class-meta">
+
+                    <div class="meta-box">
+                        <small>Course progress</small>
+                        <strong>75%</strong>
+                    </div>
+
+                    <div class="meta-box">
+                        <small>Lessons completed</small>
+                        <strong>9 / 12</strong>
+                    </div>
+
+                    <div class="meta-box">
+                        <small>Attendance</small>
+                        <strong>92%</strong>
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Learning progress
+                </h3>
+
+                <div class="progress-track" style="margin-top:10px;">
+                    <div
+                        class="progress-value"
+                        style="width:75%"
+                    ></div>
+                </div>
+
+
+                <div class="edu-actions">
+
+                    <button
+                        class="btn"
+                        id="messageStudent"
+                    >
+                        Message student
+                    </button>
+
+                    <button
+                        class="btn secondary"
+                        id="closeStudentInside"
+                    >
+                        Close
+                    </button>
+
+                </div>
+
+            `;
+
+
+            studentModal.classList.add("show");
+
+
+            $("#messageStudent").addEventListener(
+                "click",
+                () => toast("Messaging interface ready.")
+            );
+
+
+            $("#closeStudentInside").addEventListener(
+                "click",
+                () => closeModal(studentModal)
+            );
+
+        });
+
+    });
+
+
+    $("#closeStudentModal")?.addEventListener(
+        "click",
+        () => closeModal(studentModal)
+    );
+
+
+    /* =========================================
+       ADD CLASS
+    ========================================= */
+
+    const addForm =
+        $("#addClassForm");
+
+
+    if (addForm) {
+
+        addForm.addEventListener("submit", event => {
+
+            event.preventDefault();
+
+
+            const name =
+                $("#newClassName").value.trim();
+
+            const category =
+                $("#newClassCategory").value;
+
+            const description =
+                $("#newClassDescription").value.trim();
+
+            const duration =
+                $("#newClassDuration").value.trim();
+
+            const fee =
+                $("#newClassFee").value.trim();
+
+            const capacity =
+                $("#newClassCapacity").value;
+
+            if (!name || !description || !duration || !fee) {
+
+                toast("Please complete the required fields.");
+
+                return;
+
+            }
+
+
+            const grid =
+                $("#classesGrid");
+
+
+            const article =
+                document.createElement("article");
+
+            article.className =
+                "card class-card searchable";
+
+
+            article.dataset.search =
+                `${name} ${category} ${description}`;
+
+
+            article.innerHTML = `
+
+                <div class="class-body">
+
+                    <span class="tag">
+                        ${category}
+                    </span>
+
+                    <h3>
+                        ${name}
+                    </h3>
+
+                    <p>
+                        ${description}
+                    </p>
+
+
+                    <div class="class-meta">
+
+                        <div class="meta-box">
+                            <small>Students</small>
+                            <strong>0 / ${capacity}</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <small>Progress</small>
+                            <strong>0%</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <small>Lessons</small>
+                            <strong>0</strong>
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn small"
+                    >
+                        Manage class →
+                    </button>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(article);
+
+
+            const manageButton =
+                article.querySelector("button");
+
+
+            manageButton.addEventListener(
+                "click",
+                () => {
+
+                    manageButton.dataset.name = name;
+                    manageButton.dataset.category = category;
+                    manageButton.dataset.duration = duration;
+                    manageButton.dataset.fee = fee;
+                    manageButton.dataset.students =
+                        `0 / ${capacity}`;
+
+                    openDynamicClass(
+                        manageButton
+                    );
+
+                }
+            );
+
+
+            const currentCount =
+                parseInt(
+                    $("#classCount").textContent,
+                    10
+                ) || 0;
+
+
+            $("#classCount").textContent =
+                currentCount + 1;
+
+
+            addForm.reset();
+
+            toast("Class published successfully ✓");
+
+
+            document
+                .querySelector('[data-section="classes"]')
+                ?.click();
+
+        });
+
+    }
+
+
+    /* =========================================
+       DYNAMIC CLASS OPEN
+    ========================================= */
+
+    function openDynamicClass(button) {
+
+        const name =
+            button.dataset.name;
+
+        const category =
+            button.dataset.category;
+
+        const duration =
+            button.dataset.duration;
+
+        const fee =
+            button.dataset.fee;
+
+        const students =
+            button.dataset.students;
+
+
+        classContent.innerHTML = `
+
+            <div class="eyebrow">
+                ${category}
+            </div>
+
+            <h2>
+                ${name}
+            </h2>
+
+            <p class="muted">
+                Your newly published class is ready.
+            </p>
+
+
+            <div class="class-meta">
+
+                <div class="meta-box">
+                    <small>Duration</small>
+                    <strong>${duration}</strong>
+                </div>
+
+                <div class="meta-box">
+                    <small>Fee</small>
+                    <strong>${fee}</strong>
+                </div>
+
+                <div class="meta-box">
+                    <small>Students</small>
+                    <strong>${students}</strong>
+                </div>
+
+            </div>
+
+
+            <h3>
+                Curriculum
+            </h3>
+
+            <div class="panel" style="margin-top:12px;">
+
+                <p>
+                    ○ No lessons added yet
+                </p>
+
+                <p class="muted">
+                    Add your first lecture when the backend is connected.
+                </p>
+
+            </div>
+
+        `;
+
+
+        classModal.classList.add("show");
+
+    }
+
+
+    /* =========================================
+       MEETING
+    ========================================= */
+
+    const meetingModal =
+        $("#meetingModal");
+
+    const meetingTitle =
+        $("#meetingTitle");
+
+
+    function openMeeting(title) {
+
+        meetingTitle.textContent =
+            title || "Live Class";
+
+        meetingModal.classList.add("show");
+
+    }
+
+
+    $("#dashboardMeeting")?.addEventListener(
+        "click",
+        () => openMeeting(
+            "React State Management Live Q&A"
+        )
+    );
+
+
+    $$(".start-meeting").forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => openMeeting(
+                button.dataset.title
+            )
+        );
+
+    });
+
+
+    $("#closeMeetingModal")?.addEventListener(
+        "click",
+        () => closeModal(meetingModal)
+    );
+
+
+    $("#endMeeting")?.addEventListener(
+        "click",
+        () => {
+
+            closeModal(meetingModal);
+
+            toast("Class ended.");
+
+        }
+    );
+
+
+    $("#micButton")?.addEventListener(
+        "click",
+        event => {
+
+            event.currentTarget.classList.toggle("active");
+
+            toast(
+                event.currentTarget.classList.contains("active")
+                    ? "Microphone muted"
+                    : "Microphone unmuted"
+            );
+
+        }
+    );
+
+
+    $("#cameraButton")?.addEventListener(
+        "click",
+        event => {
+
+            event.currentTarget.classList.toggle("active");
+
+            toast(
+                event.currentTarget.classList.contains("active")
+                    ? "Camera turned off"
+                    : "Camera turned on"
+            );
+
+        }
+    );
+
+
+    $("#screenButton")?.addEventListener(
+        "click",
+        () => toast(
+            "Screen sharing will connect when the live-video backend is added."
+        )
+    );
+
+
+    $("#chatButton")?.addEventListener(
+        "click",
+        () => toast(
+            "Live chat interface opened."
+        )
+    );
+
+
+    /* =========================================
+       LECTURES
+    ========================================= */
+
+    $$(".lecture-open").forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => toast(
+                "Lecture opened."
+            )
+        );
+
+    });
+
+
+    /* =========================================
+       SESSION DETAILS
+    ========================================= */
+
+    $$(".schedule-details").forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => toast(
+                "Session details opened."
+            )
+        );
+
+    });
+
+
+    /* =========================================
+       PROFILE
+    ========================================= */
+
+    $("#saveProfile")?.addEventListener(
+        "click",
+        () => {
+
+            const name =
+                $("#profileName").value.trim();
+
+            if (!name) {
+
+                toast("Please enter your name.");
+
+                return;
+
+            }
+
+            toast("Educator profile updated ✓");
+
+        }
+    );
+
+
+    /* =========================================
+       MODAL BACKDROP CLOSE
+    ========================================= */
+
+    [classModal, studentModal, meetingModal]
+        .forEach(modal => {
+
+            modal?.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target === modal
+                    ) {
+                        closeModal(modal);
+                    }
+
+                }
+            );
+
+        });
+
+
+})();
+
+</script>
+
+<script src="../../js/supabase.js"></script>
+<script src="../../js/guard.js"></script>
+<script src="../../js/logout.js"></script>
+</body>
+</html>
